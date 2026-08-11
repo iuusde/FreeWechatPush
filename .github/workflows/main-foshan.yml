@@ -1,5 +1,5 @@
 # 微信推送定时任务
-name: 微信推送-顺德
+name: 微信推送-佛山
 
 # Controls when the workflow will run
 on:
@@ -37,7 +37,7 @@ jobs:
         env:
           APP_ID: ${{ secrets.APP_ID }}
           APP_SECRET: ${{ secrets.APP_SECRET }}
-          CITI_BEIHAI: ${{ secrets.CITI_SHUNDE }}
+          CITI_BEIHAI: ${{ secrets.CITI_FOSHAN }}
           OPEN_ID_ME: ${{ secrets.OPEN_ID_FSH }}
           WEATHER_TEMPLATE_ID: ${{ secrets.WEATHER_TEMPLATE_ID }}
         run: python main.py
