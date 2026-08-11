@@ -1,10 +1,12 @@
-# This is a basic workflow to help you get started with Actions
-
+# 微信推送定时任务
 name: 微信推送
 
 # Controls when the workflow will run
 on:
   workflow_dispatch:
+  # 定时触发：每天早上8点30分（cron 使用 UTC 时间，北京时间 UTC+8）
+  schedule:
+    - cron: '30 0 * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -18,12 +20,24 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      # 配置 Python 3.12 环境
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      # 先升级 pip，再安装 requirements.txt 中的依赖
+      - name: Install dependencies
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 执行 main.py 脚本
+      - name: Run main.py
+        env:
+          APP_ID: ${{ secrets.APP_ID }}
+          APP_SECRET: ${{ secrets.APP_SECRET }}
+          CITI_BEIHAI: ${{ secrets.CITI_BEIHAI }}
+          OPEN_ID_ME: ${{ secrets.OPEN_ID_ME }}
+          WEATHER_TEMPLATE_ID: ${{ secrets.WEATHER_TEMPLATE_ID }}
+        run: python main.py
