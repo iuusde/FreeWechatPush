@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
   # 定时触发：每天早上8点30分（cron 使用 UTC 时间，北京时间 UTC+8）
   schedule:
-    - cron: '30 0 * * *'
+    - cron: '25 8 * * *'       # 错开整点/半点高峰，减少排队延迟
+      timezone: 'Asia/Shanghai' # 直接指定北京时间，无需再减8小时
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
