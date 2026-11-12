@@ -15,13 +15,39 @@ appSecret = os.environ.get("APP_SECRET", "")
 openId = os.environ.get("OPEN_ID_ME", "")
 # 天气预报模板ID
 weather_template_id = os.environ.get("WEATHER_TEMPLATE_ID", "")
+weather_template_id2 = os.environ.get("WEATHER_TEMPLATE_ID2", "")
 # 时间表模板ID
 timetable_template_id = os.environ.get("TIMETABLE_TEMPLATE_ID", "")
 # 天气预报城市
 my_city = os.environ.get("CITI_BEIHAI", "")
+# 天气预告省份
+my_county_code = os.environ.get("COUNTY_CODE_DONGYANG", "")
 
-
-
+def get_weather_county(my_city_county_code):
+    urls = ["https://www.weather.com.cn/weather1d/"+my_city_county_code+".shtml#input",
+            ]
+    for url in urls:
+        resp = requests.get(url)
+        text = resp.content.decode("utf-8")
+        soup = BeautifulSoup(text, 'html5lib')
+        div_crumbs = soup.find("div",class_="crumbs fl")
+        county = div_crumbs.find_all("span")[-1]
+        div_t = soup.find("div", class_="t")
+        ul_clearfix = div_t.find("ul",class_="clearfix")
+        weas = ul_clearfix.find_all("p",class_="wea")
+        tems = ul_clearfix.find_all("p",class_="tem")
+        sun_up = ul_clearfix.find("p",class_="sun sunUp")
+        sun_down = ul_clearfix.find("p",class_="sun sunDown")
+        day_tem = tems[0].find("span").get_text()
+        night_tem = tems[1].find("span").get_text()
+        day_em = tems[0].find("em").get_text()
+        night_em = tems[1].find("em").get_text()
+        sun_u_date = sun_up.find("span").get_text()
+        sun_d_date = sun_down.find("span").get_text()
+        aday = "白天"+weas[0].get_text()+day_tem+day_em+",夜间"+weas[1].get_text()+night_tem+night_em
+        sun = sun_u_date+","+sun_d_date
+        return county,aday,sun
+        
 def get_weather(my_city):
     urls = ["http://www.weather.com.cn/textFC/hb.shtml",
             "http://www.weather.com.cn/textFC/db.shtml",
@@ -97,7 +123,7 @@ def send_weather(access_token, weather):
     import datetime
     today = datetime.date.today()
     today_str = today.strftime("%Y年%m月%d日")
-
+    
     body = {
         "touser": openId.strip(),
         "template_id": weather_template_id.strip(),
@@ -126,6 +152,52 @@ def send_weather(access_token, weather):
     url = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}'.format(access_token)
     print(requests.post(url, json.dumps(body)).text)
 
+def send_weather_county(access_token, weather,county_weather):
+    # touser 就是 openID
+    # template_id 就是模板ID
+    # url 就是点击模板跳转的url
+    # data就按这种格式写，time和text就是之前{{time.DATA}}中的那个time，value就是你要替换DATA的值
+
+    import datetime
+    today = datetime.date.today()
+    today_str = today.strftime("%Y年%m月%d日")
+    
+    body = {
+        "touser": openId.strip(),
+        "template_id": weather_template_id2.strip(),
+        "url": "https://weixin.qq.com",
+        "data": {
+            "date": {
+                "value": today_str
+            },
+            "region": {
+                "value": weather[0]
+            },
+            "weather": {
+                "value": weather[2]
+            },
+            "temp": {
+                "value": weather[1]
+            },
+            "wind_dir": {
+                "value": weather[3]
+            },
+            "county": {
+                "value": county_weather[0]
+            },
+            "county_weather": {
+                "value": county_weather[1]
+            },
+            "sun": {
+                "value": county_weather[2]
+            },
+            "today_note": {
+                "value": get_daily_love()
+            }
+        }
+    }
+    url = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}'.format(access_token)
+    print(requests.post(url, json.dumps(body)).text)
 
 def send_timetable(access_token, message):
     body = {
@@ -148,8 +220,14 @@ def weather_report(city):
     # 2. 获取天气
     weather = get_weather(city)
     print(f"天气信息： {weather}")
+    # 2.2 获取省份
+    if my_county_code:
+        county_weather = get_weather_county(my_county_code)
     # 3. 发送消息
-    send_weather(access_token, weather)
+    if my_county_code:
+        send_weather(access_token, weather,county_weather)
+    else:
+        send_weather(access_token, weather)
 
 
 def timetable(message):
