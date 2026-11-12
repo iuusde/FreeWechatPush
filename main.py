@@ -31,7 +31,7 @@ def get_weather_county(my_city_county_code):
         text = resp.content.decode("utf-8")
         soup = BeautifulSoup(text, 'html5lib')
         div_crumbs = soup.find("div",class_="crumbs fl")
-        county = div_crumbs.find_all("span")[-1]..get_text()
+        county = div_crumbs.find_all("span")[-1].get_text()
         div_t = soup.find("div", class_="t")
         ul_clearfix = div_t.find("ul",class_="clearfix")
         weas = ul_clearfix.find_all("p",class_="wea")
