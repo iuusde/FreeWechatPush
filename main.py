@@ -37,7 +37,7 @@ def get_weather_county(my_city_county_code):
         lis = ul_clearfix.find_all("li")
         for li in lis :
             h1 = li.find("h1").get_text()
-            if(h1.contains("白天")):
+            if("白天" in h1):
                 weas_day = li.find("p",class_="wea").get_text()
                 p_tem = li.find("p",class_="tem")
                 day_tem = p_tem.find("span").get_text()
