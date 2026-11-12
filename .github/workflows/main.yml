@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   # 定时触发：每天早上8点30分（cron 使用 UTC 时间，北京时间 UTC+8）
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 17 * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -40,6 +40,4 @@ jobs:
           CITI_BEIHAI: ${{ secrets.CITI_BEIHAI }}
           OPEN_ID_ME: ${{ secrets.OPEN_ID_ME }}
           WEATHER_TEMPLATE_ID: ${{ secrets.WEATHER_TEMPLATE_ID }}
-          WEATHER_TEMPLATE_ID2: ${{ secrets.WEATHER_TEMPLATE_ID2 }}
-          COUNTY_CODE_DONGYANG: ${{ secrets.COUNTY_CODE_DONGYANG }}
         run: python main.py
