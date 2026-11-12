@@ -40,4 +40,6 @@ jobs:
           CITI_BEIHAI: ${{ secrets.CITI_JINHUA }}
           OPEN_ID_ME: ${{ secrets.OPEN_ID_WEIWEI }}
           WEATHER_TEMPLATE_ID: ${{ secrets.WEATHER_TEMPLATE_ID }}
+          WEATHER_TEMPLATE_ID2: ${{ secrets.WEATHER_TEMPLATE_ID2 }}
+          COUNTY_CODE_DONGYANG: ${{ secrets.COUNTY_CODE_DONGYANG }}
         run: python main.py
