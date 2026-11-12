@@ -37,7 +37,7 @@ jobs:
         env:
           APP_ID: ${{ secrets.APP_ID }}
           APP_SECRET: ${{ secrets.APP_SECRET }}
-          CITI_BEIHAI: ${{ secrets.CITI_DONGYANG }}
+          CITI_BEIHAI: ${{ secrets.CITI_JINHUA }}
           OPEN_ID_ME: ${{ secrets.OPEN_ID_WEIWEI }}
           WEATHER_TEMPLATE_ID: ${{ secrets.WEATHER_TEMPLATE_ID }}
         run: python main.py
