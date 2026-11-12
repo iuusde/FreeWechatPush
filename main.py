@@ -34,18 +34,25 @@ def get_weather_county(my_city_county_code):
         county = div_crumbs.find_all("span")[-1].get_text()
         div_t = soup.find("div", class_="t")
         ul_clearfix = div_t.find("ul",class_="clearfix")
-        weas = ul_clearfix.find_all("p",class_="wea")
-        tems = ul_clearfix.find_all("p",class_="tem")
+        lis = ul_clearfix.find_all("li")
+        for li in lis :
+            h1 = li.find("h1").get_text()
+            if(h1.contains("白天")):
+                weas_day = li.find("p",class_="wea").get_text()
+                p_tem = li.find("p",class_="tem")
+                day_tem = p_tem.find("span").get_text()
+                day_em = p_tem.find("em").get_text()
+            else:
+                weas_night = li.find("p",class_="wea").get_text()
+                p_tem = li.find("p",class_="tem")
+                night_tem = p_tem.find("span").get_text()
+                night_em = p_tem.find("em").get_text()
         sun_up = ul_clearfix.find("p",class_="sun sunUp")
         sun_down = ul_clearfix.find("p",class_="sun sunDown")
-        day_tem = tems[0].find("span").get_text()
-        night_tem = tems[1].find("span").get_text()
-        day_em = tems[0].find("em").get_text()
-        night_em = tems[1].find("em").get_text()
         sun_u_date = sun_up.find("span").get_text()
         sun_d_date = sun_down.find("span").get_text()
-        aday = "白天"+weas[0].get_text()+day_tem+day_em+",夜间"+weas[1].get_text()+night_tem+night_em
-        sun = sun_u_date+","+sun_d_date
+        aday = "白天"+weas_day+day_tem+day_em+"——夜间"+weas_night+night_tem+night_em
+        sun = sun_u_date+"——"+sun_d_date
         return county,aday,sun
         
 def get_weather(my_city):
