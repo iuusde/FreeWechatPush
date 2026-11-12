@@ -225,7 +225,7 @@ def weather_report(city):
         county_weather = get_weather_county(my_county_code)
     # 3. 发送消息
     if my_county_code:
-        send_weather(access_token, weather,county_weather)
+        send_weather_county(access_token, weather,county_weather)
     else:
         send_weather(access_token, weather)
 
